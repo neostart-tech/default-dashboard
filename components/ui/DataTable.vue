@@ -1,61 +1,80 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-    <!-- En-tête du tableau -->
-    <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    <!-- Header -->
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ title }}</h3>
-          <p v-if="description" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+            {{ title }}
+          </h2>
+          <p v-if="description" class="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {{ description }}
           </p>
         </div>
-        
-        <!-- Actions -->
-        <div class="flex items-center gap-2">
-          <!-- Recherche -->
+
+        <div class="flex items-center gap-3">
+          <!-- Search -->
           <div class="relative">
             <input
               v-model="searchQuery"
-              type="search"
+              type="text"
               placeholder="Rechercher..."
-              class="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-            />
-            <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+              class="pl-10 pr-4 py-2 w-64 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+              🔍
+            </span>
           </div>
 
-          <!-- Filtres -->
-          <button
-            v-if="showFilters"
-            @click="toggleFilters"
-            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-          </button>
+          <!-- Actions -->
+          <div class="flex items-center gap-2">
+            <button
+              v-if="filters"
+              @click="showFilters = !showFilters"
+              class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+            >
+              <span>🔧</span>
+              <span>Filtres</span>
+            </button>
 
-          <!-- Ajouter -->
-          <NuxtLink
-            v-if="addButton"
-            :to="addButton.to"
-            class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            {{ addButton.label }}
-          </NuxtLink>
+            <router-link
+              v-if="addButton"
+              :to="addButton.to"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            >
+              <span>+</span>
+              <span>{{ addButton.label }}</span>
+            </router-link>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div v-if="showFilters && filters" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div class="grid grid-cols-4 gap-4">
+          <div v-for="filter in filters" :key="filter.key">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ filter.label }}
+            </label>
+            <select
+              v-model="activeFilters[filter.key]"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            >
+              <option value="">Tous</option>
+              <option v-for="option in filter.options" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Tableau -->
+    <!-- Table -->
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-gray-50 dark:bg-gray-700/50">
+          <tr class="border-b border-gray-200 dark:border-gray-700">
             <th
               v-for="column in columns"
               :key="column.key"
@@ -70,36 +89,52 @@
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
           <tr
-            v-for="(item, index) in filteredData"
-            :key="item.id || index"
-            class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+            v-for="item in filteredData"
+            :key="item.id"
+            class="hover:bg-gray-50 dark:hover:bg-gray-700/50"
           >
             <td
               v-for="column in columns"
               :key="column.key"
-              class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300"
+              class="px-6 py-4 text-sm text-gray-900 dark:text-white"
             >
-              {{ item[column.key] }}
+              <slot :name="`column-${column.key}`" :item="item">
+                <span v-if="column.key === 'status'">
+                  <span :class="getStatusClass(item.status)">
+                    {{ item[column.key] }}
+                  </span>
+                </span>
+                <span v-else-if="column.key === 'actions'">
+                  <!-- Actions will be in separate column -->
+                </span>
+                <span v-else>
+                  {{ item[column.key] }}
+                </span>
+              </slot>
             </td>
-            
-            <!-- Actions -->
-            <td class="px-6 py-4 text-right text-sm font-medium">
-              <div class="flex justify-end gap-2">
+            <td class="px-6 py-4 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-2">
                 <button
-                  @click="editItem(item)"
-                  class="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg"
+                  @click="$emit('edit', item)"
+                  class="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
+                  title="Modifier"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
+                  ✏️
                 </button>
                 <button
-                  @click="deleteItem(item)"
-                  class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                  @click="$emit('delete', item)"
+                  class="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                  title="Supprimer"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  🗑️
+                </button>
+                <button
+                  v-if="actions && actions.includes('view')"
+                  @click="$emit('view', item)"
+                  class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  title="Voir"
+                >
+                  👁️
                 </button>
               </div>
             </td>
@@ -108,39 +143,49 @@
       </table>
     </div>
 
-    <!-- Pied de tableau -->
+    <!-- Pagination & empty state -->
     <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <!-- Info de pagination -->
+      <div v-if="filteredData.length === 0" class="text-center py-8">
+        <div class="text-gray-400 dark:text-gray-500 text-4xl mb-2">📭</div>
+        <p class="text-gray-500 dark:text-gray-400">Aucune donnée trouvée</p>
+      </div>
+
+      <div v-else class="flex items-center justify-between">
         <div class="text-sm text-gray-600 dark:text-gray-400">
-          Affichage de <span class="font-semibold">{{ startItem }}-{{ endItem }}</span> 
-          sur <span class="font-semibold">{{ totalItems }}</span> résultats
+          Affichage de {{ startItem }} à {{ endItem }} sur {{ filteredData.length }} éléments
         </div>
 
-        <!-- Pagination -->
         <div class="flex items-center gap-2">
           <button
             @click="prevPage"
             :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
+            ← Précédent
           </button>
-          
-          <span class="text-sm text-gray-700 dark:text-gray-300">
-            Page {{ currentPage }} sur {{ totalPages }}
-          </span>
-          
+
+          <div class="flex items-center gap-1">
+            <button
+              v-for="page in pageNumbers"
+              :key="page"
+              @click="goToPage(page)"
+              :class="[
+                'px-3 py-1 rounded-lg',
+                currentPage === page
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              ]"
+            >
+              {{ page }}
+            </button>
+          </div>
+
           <button
             @click="nextPage"
             :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
+            Suivant →
           </button>
         </div>
       </div>
@@ -149,9 +194,19 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+
+
 interface Column {
   key: string
   label: string
+  sortable?: boolean
+}
+
+interface Filter {
+  key: string
+  label: string
+  options: Array<{ value: string, label: string }>
 }
 
 interface AddButton {
@@ -159,96 +214,130 @@ interface AddButton {
   label: string
 }
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    default: ''
-  },
-  columns: {
-    type: Array as () => Column[],
-    required: true
-  },
-  data: {
-    type: Array as () => any[],
-    required: true
-  },
-  itemsPerPage: {
-    type: Number,
-    default: 10
-  },
-  showFilters: {
-    type: Boolean,
-    default: false
-  },
-  addButton: {
-    type: Object as () => AddButton,
-    default: null
-  }
+interface Props {
+  title: string
+  description?: string
+  columns: Column[]
+  data: any[]
+  filters?: Filter[]
+  actions?: string[]
+  addButton?: AddButton
+  itemsPerPage?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  itemsPerPage: 10,
+  actions: () => ['edit', 'delete']
 })
 
-const emit = defineEmits(['edit', 'delete'])
+const emit = defineEmits<{
+  edit: [item: any]
+  delete: [item: any]
+  view: [item: any]
+}>()
 
+// Search & filters
 const searchQuery = ref('')
-const currentPage = ref(1)
-const showFiltersPanel = ref(false)
+const activeFilters = ref<Record<string, string>>({})
+const showFilters = ref(false)
 
-// Données filtrées
+// Pagination
+const currentPage = ref(1)
+
+// Computed
 const filteredData = computed(() => {
   let filtered = [...props.data]
-  
-  // Recherche
+
+  // Apply search
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(item => {
-      return Object.values(item).some(value => 
+      return Object.values(item).some(value =>
         String(value).toLowerCase().includes(query)
       )
     })
   }
-  
-  // Pagination
-  const start = (currentPage.value - 1) * props.itemsPerPage
-  const end = start + props.itemsPerPage
-  return filtered.slice(start, end)
+
+  // Apply filters
+  if (props.filters) {
+    props.filters.forEach(filter => {
+      const value = activeFilters.value[filter.key]
+      if (value) {
+        filtered = filtered.filter(item => item[filter.key] === value)
+      }
+    })
+  }
+
+  return filtered
 })
 
-// Calculs pour la pagination
-const totalItems = computed(() => props.data.length)
-const totalPages = computed(() => Math.ceil(totalItems.value / props.itemsPerPage))
-const startItem = computed(() => (currentPage.value - 1) * props.itemsPerPage + 1)
-const endItem = computed(() => Math.min(currentPage.value * props.itemsPerPage, totalItems.value))
+const totalPages = computed(() => {
+  return Math.ceil(filteredData.value.length / props.itemsPerPage)
+})
 
-// Méthodes
-const toggleFilters = () => {
-  showFiltersPanel.value = !showFiltersPanel.value
-}
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * props.itemsPerPage
+  const end = start + props.itemsPerPage
+  return filteredData.value.slice(start, end)
+})
 
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
+const startItem = computed(() => {
+  return (currentPage.value - 1) * props.itemsPerPage + 1
+})
+
+const endItem = computed(() => {
+  return Math.min(currentPage.value * props.itemsPerPage, filteredData.value.length)
+})
+
+const pageNumbers = computed(() => {
+  const maxVisible = 5
+  const pages: number[] = []
+
+  if (totalPages.value <= maxVisible) {
+    for (let i = 1; i <= totalPages.value; i++) {
+      pages.push(i)
+    }
+  } else {
+    let start = Math.max(1, currentPage.value - 2)
+    let end = Math.min(totalPages.value, start + maxVisible - 1)
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1)
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i)
+    }
   }
+
+  return pages
+})
+
+// Methods
+const getStatusClass = (status: string) => {
+  const classes: Record<string, string> = {
+    'Actif': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    'Inactif': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+    'En attente': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+    'Banni': 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  }
+  return classes[status] || 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800'
 }
 
 const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
+  if (currentPage.value > 1) currentPage.value--
 }
 
-const editItem = (item: any) => {
-  emit('edit', item)
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++
 }
 
-const deleteItem = (item: any) => {
-  emit('delete', item)
+const goToPage = (page: number) => {
+  currentPage.value = page
 }
 
-// Réinitialiser la page lors de la recherche
-watch(searchQuery, () => {
+// Reset pagination when filters change
+watch([searchQuery, activeFilters], () => {
   currentPage.value = 1
 })
 </script>

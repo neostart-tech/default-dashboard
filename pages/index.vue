@@ -1,3 +1,4 @@
+
 <template>
   <DashboardLayout>
     <!-- Header / Breadcrumb -->
@@ -15,7 +16,7 @@
           Tableau de bord
         </h1>
         <p class="text-gray-600 dark:text-gray-400">
-          Bienvenue, Neo Start Tech. Voici un aperçu global de l’activité du système.
+          Bienvenue, Neo Start Tech. Voici un Dashboard par défaut 
         </p>
       </div>
     </section>
@@ -41,6 +42,8 @@
 <script setup lang="ts">
 import DashboardLayout from '~/components/layout/DashboardLayout.vue'
 import DataTable from '~/components/ui/DataTable.vue'
+
+
 
 /* Colonnes du tableau */
 const userColumns = [

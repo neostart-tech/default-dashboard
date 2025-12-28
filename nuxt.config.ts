@@ -1,24 +1,60 @@
-export default defineNuxtConfig({
-  // Désactivez complètement la vérification TypeScript
-  typescript: {
-    strict: false,
-    typeCheck: false,
-    shim: false,
-    tsConfig: {
-      compilerOptions: {
-        types: []
+
+export default {
+  
+  
+  modules: [
+    
+  '@nuxtjs/tailwindcss',
+    '@pinia/nuxt'
+  ],
+
+  axios: {
+    // URL de base de votre API Laravel
+    baseURL: process.env.API_BASE_URL || 'http://localhost:8000/api',
+    credentials: true, 
+    headers: {
+      common: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     }
   },
-  
-  // Désactivez vite-plugin-checker
-  vite: {
-    plugins: []
+
+  auth: {
+    strategies: {
+      laravelSanctum: {
+        provider: 'laravel/sanctum',
+        url: process.env.API_BASE_URL || 'http://localhost:8000',
+        endpoints: {
+          login: { url: '/api/auth/login', method: 'post' },
+          logout: { url: '/api/auth/logout', method: 'post' },
+          user: { url: '/api/auth/user', method: 'get' }
+        },
+        user: {
+          property: false
+        }
+      }
+    },
+    redirect: {
+      login: '/auth/login',
+      logout: '/',
+      home: '/dashboard'
+    },
+    localStorage: false, 
+    cookie: {
+      prefix: 'auth.',
+      options: {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7 
+      }
+    }
   },
-  
-  modules: ['@nuxtjs/tailwindcss'],
-  css: ['@bhplugin/vue3-datatable/dist/style.css'],
-  devtools: { enabled: true },
-  compatibilityDate: '2024-04-03',
-  ssr: true
-})
+
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:8000/api',
+      appName: process.env.APP_NAME || 'Mon Application'
+    }
+  }
+}

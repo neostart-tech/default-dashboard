@@ -6,50 +6,44 @@
     ]"
   >
     <!-- Logo -->
-    <!-- Logo professionnel pour dashboard -->
-<div class="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 px-4">
-  <div v-if="isOpen" class="flex items-center gap-3">
-    <!-- Logo moderne avec gradient -->
-    <div class="relative">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
-        <!-- Icône moderne (dashboard) -->
-        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-                d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-        </svg>
+    <div class="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 px-4">
+      <div v-if="isOpen" class="flex items-center gap-3">
+        <div class="relative">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
+            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+          </div>
+          <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+        </div>
+        
+        <div>
+          <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Neo-Dash
+          </span>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Business Platform</p>
+        </div>
       </div>
-      <!-- Point d'accent -->
-      <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+      
+      <div v-else class="relative">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                  d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+          </svg>
+        </div>
+        <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+      </div>
     </div>
-    
-    <!-- Nom de l'application -->
-    <div>
-      <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-        Neo-Dash
-      </span>
-      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Business Platform</p>
-    </div>
-  </div>
-  
-  <!-- Logo réduit (sidebar fermée) -->
-  <div v-else class="relative">
-    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
-      <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
-              d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-      </svg>
-    </div>
-    <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-800"></div>
-  </div>
-</div>
 
     <!-- Navigation -->
     <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
@@ -78,6 +72,18 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13 0a4 4 0 110 5.392M9 21h6" />
           </svg>
           <span v-if="isOpen">Utilisateurs</span>
+        </NuxtLink>
+        
+        <!-- Blog Module Link -->
+        <NuxtLink
+          to="/blogs"
+          class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          :class="{ 'justify-center': !isOpen }"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+          <span v-if="isOpen">Blogs</span>
         </NuxtLink>
         
         <NuxtLink
@@ -166,6 +172,9 @@
 </template>
 
 <script setup lang="ts">
+  import AppFooter from './AppFooter.vue'
+  
+
 const props = defineProps<{
   isOpen: boolean
 }>()
@@ -175,7 +184,10 @@ const emit = defineEmits<{
 }>()
 
 const logout = () => {
-  // Logique de déconnexion
-  console.log('Déconnexion')
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  window.location.href = '/login'
+  console.log('Déconnexion effectuée')
 }
 </script>
