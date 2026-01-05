@@ -1,15 +1,17 @@
+<!-- app.vue -->
 <template>
   <div>
-    <NuxtPage />
+    <!-- Navigation simple -->
+    <nav class="bg-gray-800 p-4">
+      <div class="container mx-auto">
+        <NuxtLink to="/" class="text-white mr-4">Accueil</NuxtLink>
+        <NuxtLink to="/dashboard" class="text-white">Dashboard</NuxtLink>
+      </div>
+    </nav>
+    
+    <!-- Contenu principal -->
+    <main>
+      <NuxtPage />
+    </main>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useDarkMode } from '~/composables/useDarkMode'
-
-const darkMode = useDarkMode()
-
-onMounted(() => {
-  darkMode.init()
-})
-</script>
